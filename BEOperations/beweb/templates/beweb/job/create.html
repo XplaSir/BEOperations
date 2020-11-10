@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+{% extends "beweb/layout.html" %} {% load i18n%} {% block content %} {% if user.is_authenticated %}
+<div class="container">
+    <h2 class="text-center font-weight-bold">JOB</h2>
+    <form method="GET">
+        {% csrf_token %}
+        <div class="row form-group">
+            <div class="col-sm-3">
+                <label class="font-weight-bold col-xs-3 col-form-label" style="padding-left: 50px;">WORK ORDER
+                    NUMBER</label>
+            </div>
+            <div class="col-sm-3">
+                <input type="text" class="form-control " required placeholder="" id="wo" name="wo" value="{{wo}}"
+                    readonly />
+            </div>
+            <div class="col-sm-3">
+                <label class="font-weight-bold col-xs-3 col-form-label" style="padding-left: 50px;">JOB NUMBER</label>
+            </div>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" required placeholder="" id="job_number" name="job_number"
+                    value="{{job_id}}" readonly />
+            </div>
+        </div>
+        <div class="row form-group" id="descrip">
+            <div class="col-sm-3">
+                <label class="font-weight-bold col-xs-3 col-form-label" style="padding-left: 50px;">DESCRIPTION</label>
+            </div>
+            <div class="col-sm-3">
+                <textarea id="tnames" name="tnames" hidden class="form-control" value=""> </textarea>
+                <textarea name="description" class="form-control" value="" required
+                    placeholder=""> {{description}}</textarea>
+            </div>
+            <div class="col-sm-3">
+                <label class="font-weight-bold col-xs-3 col-form-label" style="padding-left: 50px;">START DATE AND
+                    TIME</label>
+            </div>
+            <div class="col-sm-3">
+                <input name="start_date" type="date" class="form-control" value="" id="start_date" required />
+            </div>
+        </div>
+        
+
+        <div class="row form-group">
+            <div class="col-sm-3">
+                <label class="font-weight-bold" style="padding-left: 50px;">TYPE</label>
+            </div>
+            <div class="col-sm-3">
+                <select name="jobtype" id="jobtype" type="text" class="form-control" placeholder="Please Select Type">
+                    {% for jptype in jobtp%}
+                    <option value="{{jptype.job_type_id}}">
+                        {{jptype.type}}
+                    </option>
+                    {% endfor%}
+                </select>
+                <input name="job_type_id" type="hidden" class="form-control" id="job_type_id" />
+            </div>
+            <div class="col-sm-3">
+                <label class="font-weight-bold" style="padding-left: 50px;">EXPECTED END DATE</label>
+            </div>
+            <div class="col-sm-3">
+                <input name="expected_end_dt" type="date" class="form-control" value="{{year}}" />
+            </div>
+        </div>
+
+        <div class="row form-group" id="trigge">
+            <div class="col-sm-3">
+                <label class="font-weight-bold" style="padding-left: 50px;">TRIGGER</label>
+            </div>
+            <div class="col-sm-3">
+                <select class="form-control" required id="trigger" name="trigger">
+                    <option value="" disabled selected>Select Trigger</option>
+                    <option value="Inspection">Inspection</option>
+                    <option value="Fault">Fault</option>
+                    <option value="Maintenance">Maintenance</option>
+                    <option value="Recovery">Recovery</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <label class="font-weight-bold" style="padding-left: 50px;">FLEET</label>
+            </div>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" required placeholder="" id="fleet" name="fleet"
+                    value="{{fleet}}" />
+            </div>
+        </div>
+        <div class="row form-group" id="plants">
+            <div class="col-sm-3">
+                <label class="font-weight-bold" style="padding-left: 50px;">PLANT/EQUIPMENT TYPE</label>
+            </div>
+            <div class="col-sm-3">
+                <select class="form-control" name="asset_type" required>
+                    <option value="" disabled selected>Select Equipment </option>
+                    <option value="transformer">Transformer</option>
+                    <option value="station">Station</option>
+                    <option value="feeder">Feeder</option>
+                    <option value="meter">Meter</option>
+                    <option value="switchgear">Switchgear</option>
+                    <option value="pole">Pole</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <label class="font-weight-bold" style="padding-left: 50px;">TEAM LEADER</label>
+            </div>
+            <div class="col-sm-3">
+                <select id="assignee" name="assignee" onchange="Function()" class="form-control" required>
+                    <option value="" disabled selected>Select Team Leader</option>
+                    {% for value in teams.values%}
+                    {% for leader in value%}
+                    {% if leader.firstname  %}
+                    <option value="{{leader.ec_number}}">
+                        {{leader.firstname}} {{leader.lastname}}
+                    </option>
+                    {% endif %}
+                    {% endfor%}
+                    {% endfor%}
+                </select>
+            </div>
+        </div>
+
+        <div class="row form-group" id="members">
+            <div class="col-sm-3">
+                <label class="font-weight-bold" style="padding-left: 50px;">TEAM MEMBERS</label>
+            </div>
+            <div class="col-sm-3">
+                <select class="form-control" multiple="multiple" id="assistants"></select>
+            </div>
+            <div class="col-sm-3">
+                <label class="font-weight-bold" style="padding-left: 50px;">SELECTED</label>
+            </div>
+            <div class="col-sm-3">
+                <textarea id="xteams" class="form-control" name="assistants" value="{{member}}" required></textarea>
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <div class="form-group row  col-sm-12 d-flex justify-content-center align-content-center ">
+            <div class="col-md-3">
+                <a class="navbar-brand  col-sm-8 pt-sm-0" href="{% url 'beweb:home' %}">
+                    <input type="button" class="btn  btn-sm btn-block " value="Cancel"
+                        onclick="return confirm('Are you sure you want to cancel the job?');" />
+                </a>
+            </div>
+
+            <div class="col-md-3" id="attach">
+                <a class="navbar-brand  col-sm-8 pt-sm-0" href="#">
+                    <input type="submit" class="btn  btn-sm  btn-block " value="Attach Asset" name="Add Asset"
+                        formaction="/beweb/SaveJobandAddAsset"
+                        onclick="return confirm('Are you sure you want to add asset?');" />
+                </a>
+            </div>
+            <div class=" col-md-3">
+                <a class="navbar-brand  col-sm-8 pt-sm-0" href="}">
+                    <input type="Submit" class="btn btn-sm  btn-block " value="Submit" name="Submit"
+                        formaction="/beweb/SaveJob" onclick="return confirm('Are you sure you want to create job?');" />
+                </a>
+
+            </div>
+        </div>
+    </form>
+
+
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        $('#job_type_id').val($('#jobtype').val());
+    });
+    var mine = document.getElementById("xteams").value || "";
+    var m = document.getElementById("tnames").value || "";
+
+    $("#assistants").on("click", function (e) {
+        var e = document.getElementById("assistants");
+        if (mine.indexOf(e.value) === -1) {
+            m += e.value.substring(0, e.value.indexOf('%')) + ", ";
+            mine += e.value + ", ";
+            document.getElementById("tnames").value = mine;
+            document.getElementById("xteams").value = m;
+
+        }
+    });
+    $('#assistants').click(function () {
+        $('#assistants option').prop('selected', true);
+
+    });
+    // A user cannot select an old date
+    var today = new Date().toISOString().split('T')[0];
+    document.getElementsByName("start_date")[0].setAttribute('min', today);
+    document.getElementsByName("expected_end_dt")[0].setAttribute('min', today);
+
+    function Function() {
+        var x = document.getElementById("assistants");
+        x.options.length = 0;
+        var assignee = document.getElementById("assignee").value;
+        var mteam = {{ teams| safe}};
+    for (var key in mteam) {
+        if (mteam.hasOwnProperty(key)) {
+            if (key == assignee) {
+                var members = mteam[key][1];
+                for (var tm in members) {
+                    var option = document.createElement("option");
+                    for (var tmd in members) {
+                        option.value = members[tm]["firstname"] + "  " + members[tm]["lastname"] + "%" + members[tm]["ec_number"];;
+                        option.text = members[tm]["firstname"] + "  " + members[tm]["lastname"];
+                        x.add(option);
+                    }
+                }
+            }
+        }
+    }
+}
+</script>
+{% endif %} {% endblock %}

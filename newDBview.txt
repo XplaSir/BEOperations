@@ -1,0 +1,16 @@
+testing new view be_section
+enable auto link with issue
+
+12345
+
+resolved
+time taken
+
+set resolve
+
+test task review
+done
+12345
+0987
+1111
+finito

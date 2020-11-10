@@ -1,0 +1,9 @@
+.settings.py
+bifrost.json
+**/__pycache__
+bifrost.json
+venv
+.vscode
+env
+**/doc
+

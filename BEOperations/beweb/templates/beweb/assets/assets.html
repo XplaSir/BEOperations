@@ -1,0 +1,115 @@
+{% extends "beweb/layout.html" %} {% load i18n%} {% block content %} {% if user.is_authenticated %}
+{%load staticfiles %}
+<div class="container">
+    <form id="asset_form" method="GET" action="{% url 'beweb:saveasset' %}">
+        <input type="hidden" name="asset_type" value="{{asset_type}}" />
+        <input type="hidden" name="asset_code_pk" id="selected_asset" value="" />
+        <input type="hidden" name="wo" type="text" class="form-control" value="{{wo}}" />
+        <input type="hidden" name="joid" type="text" class="form-control" value="{{joid}}" />
+
+        <h6 class="text-center font-weight-bold">Select {{asset_type.capitalize}}</h6>
+        <table class="w3-table thead-dark w3-border table table-striped table-bordered display" data-server-side="false"
+            data-ajax="http://172.20.0.70:8089/gis/{{asset_type}}/{{centre_code}}/?format=datatables" id="assets"
+            style="background-color:#f4f4f4;border-radius: 5px">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th style="color: black;">{{column_one}}</th>
+                    <th style="color: black;">{{column_two}}</th>
+                    <th style="color: black;">{{column_three}}</th>
+                    <th style="color: black;">{{column_four}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th></th>
+                    <th style="color: black;">{{data_one}}</th>
+                    <th style="color: black;">{{data_two}}</th>
+                    <th style="color: black;">{{data_three}}</th>
+                    <th style="color: black;">{{data_four}}</th>
+                </tr>
+            </tbody>
+        </table>
+</div>
+<div class="form-group row  col-sm-12 d-flex justify-content-center align-content-center ">
+    <div class="col-md-3">
+    </div>
+    <div class="col-md-3">
+        <a class="navbar-brand  col-sm-8 pt-sm-0" href="#">
+            <input type="Submit" class="btn  btn-sm  btn-block " value="Create" name="create"
+                formaction="/beweb/saveasset/" />
+        </a>
+    </div>
+</div>
+<div class=" col-md-3">
+</div>
+</div>
+</form>
+</div>
+</div>
+<script type="text/javascript" src="{% static 'beweb/DataTables/datatables.min.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'beweb/DataTables/datatables.min.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'beweb/DataTables/dataTables.checkboxes.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'beweb/DataTables/dataTables.checkboxes.min.js' %}" />
+<script>
+    $(document).ready(function () {
+        let data_one = "{{ data_one  }}";
+        let data_two = "{{ data_two  }}";
+        let data_three = "{{ data_three  }}";
+        let data_four = "{{ data_four  }}";
+        var table = $('#assets').DataTable({
+            'columnDefs': [
+                {
+                    'targets': 0,
+                    'searchable': false,
+                    'orderable': false,
+                    'width': '5%',
+                    'className': 'dt-body-center',
+                    "data": data_one,
+                    'render': function (data, type, full, meta) {
+                        return '<input type="radio" name="asset" class="selected-asset" value="' + data + '">';
+                    }
+
+                }],
+            "serverSide": false,
+            "ajax": {
+                type: 'GET',
+                url: 'http://172.20.0.70:8089/gis/{{asset_type}}/{{centre_code}}/?format=datatables'
+            },
+            "columns": [
+                {},
+                {
+                    "data": data_one, "searchable": true
+                },
+                {
+                    "data": data_two, "searchable": true
+                },
+                {
+                    "data": data_three, "searchable": true
+                },
+                {
+                    "data": data_four, "searchable": true
+                }
+            ]
+        });
+
+
+        $('#asset_form').on('submit', function (e) {
+            // e.preventDefault()
+            var form = this;
+            var params = table.$('input').serializeArray();
+            $('#selected_asset').val(params[0]['value']);
+            $.each(params, function () {
+                if (!$.contains(document, form[this.name])) {
+                    $(form).append(
+                        $('<input>')
+                            .attr('type', 'hidden')
+                            .attr('name', this.name)
+                            .val(this.value)
+                    );
+                }
+            });
+        });
+    });
+</script>
+{% endif %} {% endblock %}

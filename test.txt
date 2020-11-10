@@ -1,0 +1,18 @@
+LoadFile "c:/program files/python37/python37.dll"
+LoadModule wsgi_module "c:/users/bedev/envs/beoperations/lib/site-packages/mod_wsgi/server/mod_wsgi.cp37-win_amd64.pyd"
+WSGIPythonHome "c:/users/bedev/envs/beoperations"
+
+test repo
+test repo 2
+test repo 3
+test repo 4
+test repo 5
+test repo 6
+test repo 7
+test repo 8
+tet repo 9
+test repo 10
+test repo 11
+test repo 12
+test repo 13
+test repo 14
